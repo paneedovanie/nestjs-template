@@ -11,10 +11,10 @@ datasource db {
 }
 
 model User {
-  id          String  @default(uuid()) @id
-  email       String  @unique
-  first_name  String
-  last_name   String?
-  phone       String?
-  password    String
+  id         String  @id @default(uuid())
+  email      String  @unique
+  first_name String
+  last_name  String?
+  phone      String?
+  password   String
 }

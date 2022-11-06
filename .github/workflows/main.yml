@@ -22,6 +22,7 @@ jobs:
         # service environment variables
         # `POSTGRES_HOST` is `postgres`
         env:
+          POSTGRES_HOST: postgres
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: password
           POSTGRES_DB: nestjs-template

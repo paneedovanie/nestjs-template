@@ -7,7 +7,7 @@ import { SignupDto } from '../dto/signup-dto';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async user(
+  async findOne(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
   ): Promise<User | null> {
     return this.prisma.user.findUnique({
@@ -46,7 +46,7 @@ export class UserService {
     });
   }
 
-  async updateUser(params: {
+  async update(params: {
     where: Prisma.UserWhereUniqueInput;
     data: Prisma.UserUpdateInput;
   }): Promise<User> {

@@ -3,36 +3,49 @@ import { PrismaService } from '../src/modules/prisma/services/prisma.service';
 import * as request from 'supertest';
 import { createTestApplication } from '../src/helpers/test.helper';
 
-describe('UserController (e2e)', () => {
+describe('AuthController (e2e)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
+  let accessToken: string;
 
   beforeAll(async () => {
     app = await createTestApplication();
 
     prisma = app.get(PrismaService);
 
+    await prisma.user.create({
+      data: {
+        firstName: 'Coco',
+        credential: {
+          create: {
+            email: 'user001@email.com',
+            password: 'Password123',
+          },
+        },
+      },
+    });
+
     await app.init();
   });
 
-  it('/users (POST)', async () => {
+  it('/auth/login (POST)', async () => {
     const { body } = await request(app.getHttpServer())
-      .post('/users')
+      .post('/auth/login')
       .send({
-        firstName: 'Chloe',
-        email: 'user002@email.com',
+        username: 'user001@email.com',
         password: 'Password123',
       })
       .expect(201);
 
-    expect(body).toMatchObject({ firstName: 'Chloe' });
+    accessToken = body.access_token;
   });
 
-  it('/users (GET)', async () => {
+  it('/auth/profile (GET)', async () => {
     const { body } = await request(app.getHttpServer())
-      .get('/users')
+      .get('/auth/profile')
+      .set({ Authorization: `Bearer ${accessToken}` })
       .expect(200);
 
-    expect(Array.isArray(body)).toBeTruthy();
+    expect(body).toMatchObject({ firstName: 'Coco' });
   });
 });

@@ -11,13 +11,13 @@ export const createTestApplication = async () => {
     .compile();
 
   // # Reset test database
-  await new Promise((res) => {
-    const command = `npx cross-env DATABASE_URL=${process.env.DATABASE_URL} npx prisma migrate reset`;
+  // await new Promise((res) => {
+  //   const command = `npx cross-env DATABASE_URL=${process.env.DATABASE_URL} npx prisma migrate reset`;
 
-    spawn(command, ['-f'], {
-      shell: true,
-    }).on('close', (code) => res(code));
-  });
+  //   spawn(command, ['-f'], {
+  //     shell: true,
+  //   }).on('close', (code) => res(code));
+  // });
 
   return testingModule.createNestApplication();
 };

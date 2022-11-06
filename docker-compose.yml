@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+    
+  postgres:
+    # image to fetch from docker hub
+    image: postgres:14.1-alpine
+    ports: 
+      - "5432:5432"
+    restart: always
+    # Environment variables for startup script
+    # container will use these variables
+    # to start the container with these define variables.
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: nestjs-template
+    # Mount init.sql file to automatically run 
+    # and create tables for us.
+    # everything in docker-entrypoint-initdb.d folder
+    # is executed as soon as container is up nd running.
+    volumes:
+      - "./docker/postgres:/docker-entrypoint-initdb.d"
+
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+      - DEFAULT_REGION=eu-west-1
+      - AWS_DEFAULT_REGION=eu-west-1
+      - HOSTNAME_EXTERNAL=localhost
+      - USE_SSL=false
+      - DATA_DIR=/tmp/localstack/data
+      - DEBUG=1
+    volumes:
+      - "/tmp/localstack:/tmp/localstack"
+      - ./.aws:/docker-entrypoint-initaws.d

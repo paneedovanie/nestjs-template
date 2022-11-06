@@ -18,11 +18,10 @@ jobs:
       # label used to access the service container
       postgres:
         # Docker Hub image
-        image: postgres:latest
+        image: postgres:12-alphine
         # service environment variables
         # `POSTGRES_HOST` is `postgres`
         env:
-          POSTGRES_HOST: postgres
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: password
           POSTGRES_DB: nestjs-template
@@ -37,10 +36,10 @@ jobs:
           --health-retries 5
 
     steps:
-      - name: Install PostgreSQL client
-        run: |
-          apt-get update
-          apt-get install --yes postgresql-client
+      # - name: Install PostgreSQL client
+      #   run: |
+      #     apt-get update
+      #     apt-get install --yes postgresql-client
 
       - name: Checkout repository
         uses: actions/checkout@v2

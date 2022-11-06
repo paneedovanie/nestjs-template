@@ -54,6 +54,9 @@ jobs:
       - name: Generate prisma client
         run: npx prisma generate
 
+      - name: Run migration
+        run: npm run migrate
+
       - name: Run test
         run: npm run test:e2e
         env:

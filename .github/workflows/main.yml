@@ -57,4 +57,4 @@ jobs:
       - name: Run test
         run: npm run test:e2e
         env:
-          DATABASE_URL: postgresql://postgres:password@postgres:5432/test?schema=public
+          DATABASE_URL: postgresql://postgres:password@postgres:5432/nestjs-template?schema=public

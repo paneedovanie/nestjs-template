@@ -21,7 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "migrate:create": "npx prisma migrate --name",
     "migrate": "npx prisma migrate dev",
-    "migrate:test": "cross-env DATABASE_URL=postgresql://postgres:password@localhost:5432/test?schema=public npx prisma migrate dev"
+    "migrate:test": "cross-env DATABASE_URL=$DATABASE_URL_TEST npx prisma migrate dev"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",

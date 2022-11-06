@@ -1,6 +1,10 @@
 name: CI
 on: push
 
+env:
+  DATABASE_URL: postgresql://postgres:password@postgres:5432/nestjs-template?schema=public
+  DATABASE_URL_TEST: postgresql://postgres:password@postgres:5432/test?schema=public
+
 jobs:
   # label of the container job
   postgres-job:
@@ -61,6 +65,3 @@ jobs:
 
       - name: Run test
         run: npm run test:e2e
-        env:
-          DATABASE_URL: postgresql://postgres:password@postgres:5432/nestjs-template?schema=public
-          DATABASE_URL_TEST: postgresql://postgres:password@postgres:5432/test?schema=public

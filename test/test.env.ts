@@ -1,1 +1,5 @@
-process.env.DATABASE_URL = "postgresql://postgres:password@localhost:5432/test?schema=public"
+import { config } from 'dotenv';
+
+const env: any = config().parsed;
+
+process.env.DATABASE_URL = env.DATABASE_URL_TEST;

@@ -19,15 +19,15 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "migrate:create": "npx prisma migrate --name",
-    "migrate": "npx prisma migrate dev",
-    "migrate:test": "cross-env DATABASE_URL=$DATABASE_URL_TEST npx prisma migrate dev"
+    "migrate": "npx prisma migrate generate --name"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
     "@prisma/client": "^4.5.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.13.2",
     "dotenv": "^16.0.3",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",

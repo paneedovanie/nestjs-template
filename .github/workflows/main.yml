@@ -2,28 +2,34 @@ name: CI
 on: push
 
 jobs:
-  container-job:
-    name: Repo Update
+  # label of the container job
+  postgres-job:
+    # containers must run in Linux based operating systems
     runs-on: ubuntu-latest
-    container: node:16.18
-      services:
-        # Label used to access the service container
-        postgres:
-          # Docker Hub image
-          image: postgres
-          # Provide the password for postgres
-          env:
-            POSTGRES_USER: postgres
-            POSTGRES_PASSWORD: password
-            POSTGRES_DB: nestjs-template
-          # Set health checks to wait until postgres has started
-          options: >-
-            --health-cmd pg_isready
-            --health-interval 10s
-            --health-timeout 5s
-            --health-retries 5
+    # Docker Hub image that `postgres-job` executes in
+    container: node:latest
 
-
+    # service containers to run with `postgres-job`
+    services:
+      # label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres:latest
+        # service environment variables
+        # `POSTGRES_HOST` is `postgres`
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: nestjs-template
+        ports:
+          # maps tcp port 5432 on service container to the host
+          - 5432:5432
+        # set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout repository

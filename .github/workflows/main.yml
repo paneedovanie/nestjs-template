@@ -61,4 +61,4 @@ jobs:
         run: npm run migrate
 
       - name: Run test
-        run: npm run test:e2e
+        run: npm run test

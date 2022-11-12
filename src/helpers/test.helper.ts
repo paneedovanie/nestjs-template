@@ -1,7 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { AppModule } from '../app.module';
-import { exec, spawn } from 'node:child_process';
-import { PrismaService } from '../modules/prisma/services/prisma.service';
+import { spawn } from 'node:child_process';
 
 export const createTestApplication = async () => {
   const testingModule = await Test.createTestingModule({
@@ -11,13 +10,14 @@ export const createTestApplication = async () => {
     // .useValue(mockDeep<PrismaClient>())
     .compile();
 
-  //   const prismaService = new PrismaService();
-  //   await prismaService.reset();
+  // # Reset test database
+  await new Promise((res) => {
+    const command = `npx cross-env DATABASE_URL=${process.env.DATABASE_URL} npx prisma migrate reset`;
 
-  //   await new Promise((res, rej) => {
-  //     const ls = spawn('npm run migrate', [], { shell: true });
-  //     ls.on('close', (code) => res(code));
-  //   });
+    spawn(command, ['-f'], {
+      shell: true,
+    }).on('close', (code) => res(code));
+  });
 
   return testingModule.createNestApplication();
 };

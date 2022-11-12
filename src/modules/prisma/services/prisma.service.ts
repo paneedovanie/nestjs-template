@@ -7,11 +7,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     await this.$connect();
   }
 
-  async reset() {
-    await this
-      .$executeRaw`SELECT 'drop table "' || tablename || '" cascade;' FROM pg_tables WHERE schemaname = 'public';`;
-  }
-
   async enableShutdownHooks(app: INestApplication) {
     this.$on('beforeExit', async () => {
       await app.close();

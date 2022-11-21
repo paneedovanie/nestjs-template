@@ -20,7 +20,7 @@
     "test": "jest --config ./test/jest-e2e.json --verbose",
     "migrate:create": "npx prisma migrate dev --name",
     "migrate": "npx prisma migrate dev",
-    "seed": "npx prisma seed"
+    "seed": "ts-node prisma/seeders"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",

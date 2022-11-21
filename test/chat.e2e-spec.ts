@@ -81,126 +81,126 @@ describe('ChatController (e2e)', () => {
   });
 });
 
-describe('ChatGateway (e2e)', () => {
-  let app: INestApplication;
-  let prisma: PrismaService;
-  let users: (User & {
-    credential: Credential;
-  })[];
-  let accessToken: string;
+// describe('ChatGateway (e2e)', () => {
+//   let app: INestApplication;
+//   let prisma: PrismaService;
+//   let users: (User & {
+//     credential: Credential;
+//   })[];
+//   let accessToken: string;
 
-  let clientSocket;
+//   let clientSocket;
 
-  beforeAll(async () => {
-    app = await createTestApplication();
-    prisma = app.get(PrismaService);
-    await app.init();
-    app.listen(0);
+//   beforeAll(async () => {
+//     app = await createTestApplication();
+//     prisma = app.get(PrismaService);
+//     await app.init();
+//     app.listen(0);
 
-    const jwtService = app.get(JwtService);
-    const chatService = app.get(ChatService);
+//     const jwtService = app.get(JwtService);
+//     const chatService = app.get(ChatService);
 
-    users = await prisma.user.findMany({
-      include: {
-        credential: true,
-      },
-    });
+//     users = await prisma.user.findMany({
+//       include: {
+//         credential: true,
+//       },
+//     });
 
-    accessToken = await jwtService.sign(
-      { id: users[0].id, username: users[0].credential.username },
-      {
-        secret: 'secret',
-      },
-    );
+//     accessToken = await jwtService.sign(
+//       { id: users[0].id, username: users[0].credential.username },
+//       {
+//         secret: 'secret',
+//       },
+//     );
 
-    const address = app.getHttpServer().address();
-    clientSocket = clientIo(`http://[${address.address}]:${address.port}`, {
-      transports: ['websocket'],
-      forceNew: true,
-      auth: {
-        token: accessToken,
-      },
-    });
+//     const address = app.getHttpServer().address();
+//     clientSocket = clientIo(`http://[${address.address}]:${address.port}`, {
+//       transports: ['websocket'],
+//       forceNew: true,
+//       auth: {
+//         token: accessToken,
+//       },
+//     });
 
-    await new Promise((res, rej) => {
-      clientSocket.on('connect', () => res(undefined));
-      clientSocket.on('connect_error', rej);
-    });
-  });
+//     await new Promise((res, rej) => {
+//       clientSocket.on('connect', () => res(undefined));
+//       clientSocket.on('connect_error', rej);
+//     });
+//   });
 
-  afterAll(() => {
-    clientSocket.close();
-    app.close();
-  });
+//   afterAll(() => {
+//     clientSocket.close();
+//     app.close();
+//   });
 
-  describe(`${ChatEvent.Message} (EVENT)`, () => {
-    it('should be able to send a message', async () => {
-      await new Promise((res) => {
-        clientSocket.emit(
-          ChatEvent.Message,
-          { content: 'world', roomId: room.id },
-          ({ content }) => {
-            expect(content).toBe('world');
-            res(undefined);
-          },
-        );
-      });
-    });
+//   describe(`${ChatEvent.Message} (EVENT)`, () => {
+//     it('should be able to send a message', async () => {
+//       await new Promise((res) => {
+//         clientSocket.emit(
+//           ChatEvent.Message,
+//           { content: 'world', roomId: room.id },
+//           ({ content }) => {
+//             expect(content).toBe('world');
+//             res(undefined);
+//           },
+//         );
+//       });
+//     });
 
-    it('should return false when sending an empty string message', async () => {
-      await new Promise((res) => {
-        clientSocket.emit(
-          ChatEvent.Message,
-          { content: '', roomId: room.id },
-          (response) => {
-            expect(response).toBe(false);
-            res(undefined);
-          },
-        );
-      });
-    });
-  });
+//     it('should return false when sending an empty string message', async () => {
+//       await new Promise((res) => {
+//         clientSocket.emit(
+//           ChatEvent.Message,
+//           { content: '', roomId: room.id },
+//           (response) => {
+//             expect(response).toBe(false);
+//             res(undefined);
+//           },
+//         );
+//       });
+//     });
+//   });
 
-  describe(`${ChatEvent.Messages} (EVENT)`, () => {
-    it(`should be able to get the room messages`, async () => {
-      await new Promise((res) => {
-        clientSocket.emit(
-          ChatEvent.Messages,
-          { roomId: room.id, page: 0 },
-          (messages) => {
-            expect(Array.isArray(messages)).toBeTruthy();
-            expect(messages).toEqual(
-              expect.arrayContaining([
-                expect.objectContaining({
-                  content: expect.any(String),
-                  user: expect.any(Object),
-                  room: expect.any(Object),
-                }),
-              ]),
-            );
-            res(undefined);
-          },
-        );
-      });
-    });
-  });
+//   describe(`${ChatEvent.Messages} (EVENT)`, () => {
+//     it(`should be able to get the room messages`, async () => {
+//       await new Promise((res) => {
+//         clientSocket.emit(
+//           ChatEvent.Messages,
+//           { roomId: room.id, page: 0 },
+//           (messages) => {
+//             expect(Array.isArray(messages)).toBeTruthy();
+//             expect(messages).toEqual(
+//               expect.arrayContaining([
+//                 expect.objectContaining({
+//                   content: expect.any(String),
+//                   user: expect.any(Object),
+//                   room: expect.any(Object),
+//                 }),
+//               ]),
+//             );
+//             res(undefined);
+//           },
+//         );
+//       });
+//     });
+//   });
 
-  describe(`${ChatEvent.LatestMessages} (EVENT)`, () => {
-    it(`should be able to get the latest messages`, async () => {
-      await new Promise((res) => {
-        clientSocket.emit(ChatEvent.LatestMessages, { page: 0 }, (rooms) => {
-          expect(Array.isArray(rooms)).toBeTruthy();
-          expect(rooms).toEqual(
-            expect.arrayContaining([
-              expect.objectContaining({
-                content: expect.any(String),
-                room: expect.any(Object),
-              }),
-            ]),
-          );
-          res(undefined);
-        });
-      });
-    });
-  });
-});
+//   describe(`${ChatEvent.LatestMessages} (EVENT)`, () => {
+//     it(`should be able to get the latest messages`, async () => {
+//       await new Promise((res) => {
+//         clientSocket.emit(ChatEvent.LatestMessages, { page: 0 }, (rooms) => {
+//           expect(Array.isArray(rooms)).toBeTruthy();
+//           expect(rooms).toEqual(
+//             expect.arrayContaining([
+//               expect.objectContaining({
+//                 content: expect.any(String),
+//                 room: expect.any(Object),
+//               }),
+//             ]),
+//           );
+//           res(undefined);
+//         });
+//       });
+//     });
+//   });
+// });

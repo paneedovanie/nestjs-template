@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["filteredRelationCount"]
 }
 
 datasource db {
@@ -12,18 +13,70 @@ datasource db {
 
 model Credential {
   id       String @id @default(uuid())
-  email    String @unique
+  username String @unique
   password String
-  userId   String
+  userId   String @unique
   user     User   @relation(fields: [userId], references: [id])
 }
 
 model User {
-  id         String       @id @default(uuid())
-  firstName  String
-  lastName   String?
-  phone      String?
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  credential Credential[]
+  id         String      @id @default(uuid())
+  name       String      @db.VarChar(20)
+  username   String      @unique()
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  userRoom   UserRoom[]
+  message    Message[]
+  room       Room[]
+  credential Credential?
+  online     Online?
+}
+
+model Online {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @unique
+  active    Boolean  @default(false)
+}
+
+enum RoleType {
+  PRIVATE
+  GROUP
+}
+
+model Room {
+  id        String     @id @default(uuid())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  type      RoleType   @default(PRIVATE)
+  user      User       @relation(fields: [userId], references: [id])
+  userRoom  UserRoom[]
+  userId    String
+  message   Message[]
+}
+
+model Message {
+  id        String     @id @default(uuid())
+  createdAt DateTime   @default(now())
+  deletedAt DateTime?
+  content   String
+  userId    String
+  user      User       @relation(fields: [userId], references: [id])
+  roomId    String
+  room      Room       @relation(fields: [roomId], references: [id])
+  userRoom  UserRoom[]
+}
+
+model UserRoom {
+  id                String   @id @default(uuid())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  userId            String
+  user              User     @relation(fields: [userId], references: [id])
+  roomId            String
+  room              Room     @relation(fields: [roomId], references: [id])
+  lastSeenMessageId String?
+  lastSeenMessage   Message? @relation(fields: [lastSeenMessageId], references: [id])
 }

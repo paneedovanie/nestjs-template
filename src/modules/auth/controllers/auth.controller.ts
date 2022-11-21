@@ -1,5 +1,14 @@
-import { Controller, UseGuards, Post, Request, Get } from '@nestjs/common';
+import {
+  Controller,
+  UseGuards,
+  Post,
+  Request,
+  Get,
+  Body,
+} from '@nestjs/common';
+import { User } from '@prisma/client';
 import { UserService } from '../../user/services/user.service';
+import { SignupDto } from '../dtos/signup.dto';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { AuthService } from '../services/auth.service';
@@ -11,6 +20,15 @@ export class AuthController {
     private userService: UserService,
   ) {}
 
+  @Post('register')
+  async register(
+    @Body()
+    userData: SignupDto,
+  ): Promise<{ accessToken: string; user: User }> {
+    const user = await this.userService.createUser(userData);
+    return this.authService.login(user);
+  }
+
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req) {
@@ -20,7 +38,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
-    const { userId } = req.user;
-    return this.userService.findOne({ id: userId });
+    return this.userService.findOne({ id: req.user.id });
   }
 }

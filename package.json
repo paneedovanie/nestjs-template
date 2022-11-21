@@ -17,7 +17,7 @@
     "docker:reset": "cross-env DATABASE_URL=postgresql://postgres:password@postgres:5432/test?schema=public npx prisma migrate reset -f",
     "local:reset": "cross-env DATABASE_URL=postgresql://postgres:password@localhost:5432/test?schema=public npx prisma migrate reset -f",
     "pretest": "cross-env NODE_ENV=test npm run local:reset || npm run docker:reset && npm run seed",
-    "test": "jest --config ./test/jest-e2e.json --verbose",
+    "test": "jest --config ./test/jest-e2e.json --verbose --detectOpenHandles",
     "migrate:create": "npx prisma migrate dev --name",
     "migrate": "npx prisma migrate dev",
     "seed": "ts-node prisma/seeders"

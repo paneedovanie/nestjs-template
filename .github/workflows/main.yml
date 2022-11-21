@@ -2,7 +2,9 @@ name: CI
 on: push
 
 env:
+  NODE_ENV: test
   DATABASE_URL: postgresql://postgres:password@postgres:5432/nestjs-template?schema=public
+  DATABASE_URL_TEST: postgresql://postgres:password@postgres:5432/nestjs-template?schema=public
 
 jobs:
   # label of the container job

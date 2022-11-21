@@ -1,38 +1,43 @@
 import { INestApplication } from '@nestjs/common';
-import { PrismaService } from '../src/modules/prisma/services/prisma.service';
+import { StatusCodes } from 'http-status-codes';
 import * as request from 'supertest';
 import { createTestApplication } from '../src/helpers/test.helper';
 
 describe('UserController (e2e)', () => {
   let app: INestApplication;
-  let prisma: PrismaService;
 
   beforeAll(async () => {
     app = await createTestApplication();
-
-    prisma = app.get(PrismaService);
-
     await app.init();
   });
 
-  it('/users (POST)', async () => {
-    const { body } = await request(app.getHttpServer())
-      .post('/users')
-      .send({
-        firstName: 'Chloe',
-        email: 'user002@email.com',
-        password: 'Password123',
-      })
-      .expect(201);
-
-    expect(body).toMatchObject({ firstName: 'Chloe' });
-  });
+  afterAll(() => app.close());
 
   it('/users (GET)', async () => {
     const { body } = await request(app.getHttpServer())
       .get('/users')
-      .expect(200);
+      .expect(StatusCodes.OK);
 
     expect(Array.isArray(body)).toBeTruthy();
+  });
+
+  describe('/users/search (GET)', () => {
+    const path = (username: string) => `/users/search?username=${username}`;
+
+    it('should not return 404 when no user exists', async () => {
+      const { body } = await request(app.getHttpServer())
+        .get(path('unknown'))
+        .expect(StatusCodes.NOT_FOUND);
+    });
+
+    it('should return a user', async () => {
+      const { body } = await request(app.getHttpServer())
+        .get(path('user001'))
+        .expect(StatusCodes.OK);
+
+      expect(body).toMatchObject({
+        name: 'Joe',
+      });
+    });
   });
 });

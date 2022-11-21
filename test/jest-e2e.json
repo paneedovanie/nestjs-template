@@ -7,5 +7,5 @@
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "setupFiles": ["./test.env.ts"],
-  "testTimeout": 20000
+  "testTimeout": 5000
 }

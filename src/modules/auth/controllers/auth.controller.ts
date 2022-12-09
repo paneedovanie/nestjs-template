@@ -40,4 +40,10 @@ export class AuthController {
   getProfile(@Request() req) {
     return this.userService.findOne({ id: req.user.id });
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('change-password')
+  changePassword(@Request() req) {
+    return this.authService.changePassword(req.user.id, req.body);
+  }
 }

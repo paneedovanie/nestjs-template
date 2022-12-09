@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/services/prisma.service';
 import { User, Prisma } from '@prisma/client';
 import { SignupDto } from '../../auth/dtos/signup.dto';
-import { NotFoundError } from '@prisma/client/runtime';
+import { hash } from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -41,7 +41,7 @@ export class UserService {
         credential: {
           create: {
             username,
-            password,
+            password: await hash(password, 10),
           },
         },
       },

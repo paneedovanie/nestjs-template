@@ -109,20 +109,22 @@ export class ChatService {
 
     if (!isExists) return [];
 
-    return this.prisma.message.findMany({
-      where: {
-        roomId,
-      },
-      include: {
-        user: true,
-        room: true,
-      },
-      take: 20,
-      skip,
-      orderBy: {
-        createdAt: 'asc',
-      },
-    });
+    return (
+      await this.prisma.message.findMany({
+        where: {
+          roomId,
+        },
+        include: {
+          user: true,
+          room: true,
+        },
+        take: 20,
+        skip,
+        orderBy: {
+          createdAt: 'desc',
+        },
+      })
+    ).sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
   }
 
   async getLatestMessages(userId: string, page: number): Promise<Message[]> {

@@ -21,4 +21,15 @@ export class CredentialService {
       },
     });
   }
+
+  async update(params: {
+    where: Prisma.CredentialWhereUniqueInput;
+    data: Prisma.CredentialUpdateInput;
+  }): Promise<Credential> {
+    const { where, data } = params;
+    return this.prisma.credential.update({
+      data,
+      where,
+    });
+  }
 }
